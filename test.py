@@ -52,4 +52,4 @@ for epoch in range(150, 151):
     # Visualize CLS predictions one by one
     #visualize_cls(model)
     # Visualize grasp predictions one by one
-    #visualize_grasp(model)
+    visualize_grasp(model)

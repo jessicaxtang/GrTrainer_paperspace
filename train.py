@@ -37,6 +37,7 @@ from tqdm import tqdm
 
 import inference.models.alexnet as models
 import inference.models.grConvMap as modelsGr
+import inference.models.mmGrPred as modelsGrPred
 from paths import Path
 from parameters import Params
 from data_loader_v2 import DataLoader
