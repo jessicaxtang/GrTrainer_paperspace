@@ -1,10 +1,42 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+import cv2
+import numpy as np
 from torchvision.models import resnet50, ResNet50_Weights
 
 import copy
+
+
+class PreProcess(nn.Module):
+    """
+    Preprocess the rgb and depth image with 50 residual layers
+    """
+    
+    def __init__(self):
+        super(PreProcess, self).__init__()
+        self.rgb_features = resnet50(pretrained=True)
+        self.d_features = resnet50(pretrained=True)
+
+    def preprocess_patch(self, patch_rgb, patch_depth):
+        # Resize the RGB patch to 224x224 using OpenCV
+        resized_patch_rgb = cv2.resize(patch_rgb, (224, 224))
+        
+        # Rescale the depth image to range 0 to 255
+        min_depth = np.nanmin(patch_depth)
+        max_depth = np.nanmax(patch_depth)
+        
+        # Replace NaN values with zeros
+        patch_depth = np.nan_to_num(patch_depth)
+        
+        # Rescale the depth values to the 0-255 range
+        scaled_patch_depth = 255 * (patch_depth - min_depth) / (max_depth - min_depth)
+        
+        # Convert the depth image to uint8
+        scaled_patch_depth = scaled_patch_depth.astype(np.uint8)
+        
+        return resized_patch_rgb, scaled_patch_depth
+                    
 
 
 class ResidualBlock(nn.Module):
